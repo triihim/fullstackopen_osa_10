@@ -13,6 +13,8 @@
   "rules": {
     "react/prop-types": "off",
     "semi": "error",
-    "eqeqeq": "error"
+    "eqeqeq": "error",
+    "quotes": ["error", "double"]
+    
   }
 }
