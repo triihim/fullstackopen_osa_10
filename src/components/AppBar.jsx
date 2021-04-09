@@ -1,9 +1,13 @@
 import React from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, Pressable, StyleSheet, ScrollView } from "react-native";
 import Constants from "expo-constants";
 import Text from "./Text";
 import theme from "../theme";
-import { Link } from "react-router-native";
+import { Link, useHistory } from "react-router-native";
+import { useQuery } from "@apollo/client";
+import { GET_AUTHORIZED_USER } from "../graphql/queries";
+import useAuthStorage from "../hooks/useAuthStorage";
+import { useApolloClient } from "@apollo/client";
 
 const styles = StyleSheet.create({
   container: {
@@ -22,16 +26,43 @@ const styles = StyleSheet.create({
   }
 });
 
+const SignInLink = () => {
+  return (
+    <Link to="/signin" style={styles.link}>
+      <Text style={styles.linkText}>Sign in</Text>
+    </Link>
+  );
+};
+
+const SignOut = ({ onSignOut }) => {
+  return (
+    <Pressable style={styles.link} onPress={onSignOut}>
+      <Text style={styles.linkText}>Sign out</Text>
+    </Pressable>
+  );
+};
+
 const AppBar = () => {
+  const { data } = useQuery(GET_AUTHORIZED_USER);
+  const authStorage = useAuthStorage();
+  const apolloClient = useApolloClient();
+  const history = useHistory();
+
+  const loggedIn = data && data.authorizedUser;
+
+  const handleSignOut = async () => {
+    await authStorage.removeAccessToken();
+    apolloClient.resetStore();
+    history.push("/");
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView horizontal>
         <Link to="/" style={styles.link}>
           <Text style={styles.linkText}>Repositories</Text>
         </Link>
-        <Link to="/signin" style={styles.link}>
-          <Text style={styles.linkText}>Sign in</Text>
-        </Link>
+        { loggedIn ? <SignOut onSignOut={handleSignOut} /> : <SignInLink /> }
       </ScrollView>
     </View>
   );
