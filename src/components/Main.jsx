@@ -8,13 +8,14 @@ import { Route, Switch, Redirect } from "react-router-native";
 import SignIn from "./SignIn";
 import CreateReview from "./CreateReview";
 import SignUp from "./SignUp";
+import UserReviews from "./UserReviews";
 
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     flexShrink: 1,
     backgroundColor: theme.colors.background,
-    fontFamily: theme.fonts.main
+    fontFamily: theme.fonts.main,
   },
 });
 
@@ -37,6 +38,9 @@ const Main = () => {
         </Route>
         <Route path="/review">
           <CreateReview />
+        </Route>
+        <Route path="/user-reviews">
+          <UserReviews />
         </Route>
         <Redirect to="/" />
       </Switch>

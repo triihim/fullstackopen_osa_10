@@ -9,11 +9,13 @@ import { CREATE_USER } from "../graphql/mutations";
 import { useMutation } from "@apollo/client";
 import { useHistory } from "react-router-native";
 import useSignIn from "../hooks/useSignIn";
+import Error from "./Error";
 
 const SignUp = () => {
   const [createUser] = useMutation(CREATE_USER);
   const [signIn] = useSignIn();
   const history = useHistory();
+  const [error, setError] = React.useState(null);
 
   const styles = {
     form: {
@@ -54,7 +56,8 @@ const SignUp = () => {
       await signIn(user);
       history.push("/");
     } catch(e) {
-      console.log(e)      ;
+      setError(e.message);
+      console.log(e);
     }
   };
 
@@ -63,6 +66,7 @@ const SignUp = () => {
       {( { handleSubmit } ) => {
         return (
           <View style={styles.form}>
+            {error && <Error message={error} />}
             <FormkiTextInput name="username" placeholder="Username" />
             <View style={styles.spacer} />
             <FormkiTextInput name="password" placeholder="Password" secureTextEntry />

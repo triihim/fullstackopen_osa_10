@@ -32,14 +32,14 @@ const RepositoryReview = ({ review }) => {
     }
  
   });
-  
+
   return (
     <View style={styles.container}>
       <View style={styles.rating}>
         <Text style={styles.ratingText}>{review.rating}</Text>
       </View>
       <View style={styles.mainBody}>
-        <Text fontWeight="bold">{review.user.username}</Text>
+        <Text fontWeight="bold">{review.title || review.user.username}</Text>
         <Text color="textSecondary">{format(new Date(review.createdAt), "dd.MM.yyyy")}</Text>
         <Text>{review.text}</Text>
       </View>

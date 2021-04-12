@@ -7,13 +7,14 @@ import { useLazyQuery } from "@apollo/client";
 import { GET_REPOSITORY, GET_REVIEWS } from "../graphql/queries";
 import * as Linking from "expo-linking";
 import RepositoryReview from "./RepositoryReview";
+import useReviews from "../hooks/useReviews";
 
 const style = StyleSheet.create({
   container: {
     flexDirection: "column",
     padding: 20,
     backgroundColor: "#fff",
-    zIndex: 0
+    flex: 1
   },
   row: {
     flexDirection: "row",
@@ -55,15 +56,15 @@ const style = StyleSheet.create({
   githubButton: {
     backgroundColor: theme.colors.primary,
     marginTop: 20,
+    marginBottom: 20,
     borderRadius: 5
   },
   githubButtonText: {
     color: "#ffffff",
     fontWeight: "bold",
-    fontSize: 20,
+    fontSize: 18,
     textAlign: "center",
-    padding: 20,
-    marginBottom: 10
+    padding: 10,
   }
 });
 
@@ -90,12 +91,19 @@ const RepositoryReviews = ({ reviews }) => {
     return <View style={{height: 10}}></View>
   }
 
+  const fetchMoreReviews = () => {
+    reviews.fetchMore();
+  }
+
   return (
     <FlatList
+      style={{ flex: 1 }}
       data={items}
       renderItem={renderItem}
       ItemSeparatorComponent={separator}
       keyExtractor={item => item.id}
+      onEndReached={fetchMoreReviews}
+      onEndReachedThreshold={0.5}
     />
   );
 }
@@ -103,14 +111,13 @@ const RepositoryReviews = ({ reviews }) => {
 const RepositoryItem = ({ item }) => {
   const { id } = useParams();
   const [getRepository, repositoryResult] = useLazyQuery(GET_REPOSITORY, { fetchPolicy: 'cache-and-network' });
-  const [getReviews, reviewsResult] = useLazyQuery(GET_REVIEWS, { fetchPolicy: "cache-and-network" });
+  const reviewsResult = useReviews(); 
 
   const showDetails = !!id;
 
   if(id && !repositoryResult.called && !reviewsResult.called) {
-    console.log("Fetching repo and reviews");
     getRepository({ variables: { id: id } });
-    getReviews({ variables: { id: id } });
+    reviewsResult.getReviews({ variables: { id: id, first: 8 } });
   }
 
   if(repositoryResult.called && repositoryResult.loading) return <Text>Loading...</Text>

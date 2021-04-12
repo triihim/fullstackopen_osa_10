@@ -9,10 +9,12 @@ import theme from "../theme";
 import { useMutation } from "@apollo/client";
 import { CREATE_REVIEW } from "../graphql/mutations";
 import { useHistory } from "react-router-native";
+import Error from "./Error";
 
 const CreateReview = () => {
   const [createReview] = useMutation(CREATE_REVIEW);
   const history = useHistory();
+  const [error, setError] = React.useState(null);
 
   const styles = {
     form: {
@@ -43,6 +45,7 @@ const CreateReview = () => {
       const { data } = await createReview({ variables: formData });
       history.push(`/repositories/${data.createReview.repositoryId}`)
     } catch(e) {
+      setError(e.message);
       console.log(e);
     }
   }
@@ -68,6 +71,7 @@ const CreateReview = () => {
       {( { handleSubmit, isSubmitting } ) => {
         return (
           <View style={styles.form}>
+            {error && <Error message={error} />}
             <FormkiTextInput name="ownerName" placeholder="Repository owner name" />
             <View style={styles.spacer} />
             <FormkiTextInput name="repositoryName" placeholder="Repository name" />

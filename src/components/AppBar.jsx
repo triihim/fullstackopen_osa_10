@@ -8,7 +8,6 @@ import { useQuery } from "@apollo/client";
 import { GET_AUTHORIZED_USER } from "../graphql/queries";
 import useAuthStorage from "../hooks/useAuthStorage";
 import { useApolloClient } from "@apollo/client";
-import SignUp from "./SignUp";
 
 const styles = StyleSheet.create({
   container: {
@@ -27,13 +26,13 @@ const styles = StyleSheet.create({
   }
 });
 
-const SignInLink = () => {
-  return (
-    <Link to="/signin" style={styles.link}>
-      <Text style={styles.linkText}>Sign in</Text>
-    </Link>
-  );
-};
+// const SignInLink = () => {
+//   return (
+//     <Link to="/signin" style={styles.link}>
+//       <Text style={styles.linkText}>Sign in</Text>
+//     </Link>
+//   );
+// };
 
 const SignOut = ({ onSignOut }) => {
   return (
@@ -43,18 +42,33 @@ const SignOut = ({ onSignOut }) => {
   );
 };
 
-const ReviewLink = () => {
-  return (
-    <Link to="/review" style={styles.link}>
-      <Text style={styles.linkText}>Create review</Text>
-    </Link>
-  );
-}
+// const ReviewLink = () => {
+//   return (
+//     <Link to="/review" style={styles.link}>
+//       <Text style={styles.linkText}>Create review</Text>
+//     </Link>
+//   );
+// }
 
-const SignUpLink = () => {
+// const SignUpLink = () => {
+//   return (
+//     <Link to="/signup" style={styles.link}>
+//       <Text style={styles.linkText}>Sign up</Text>
+//     </Link>
+//   );
+// }
+
+// const UserReviewsLink = () => {
+//   return (
+//     <Link>
+//     </Link>
+//   );
+// }
+
+const NavLink = ({ to, text }) => {
   return (
-    <Link to="/signup" style={styles.link}>
-      <Text style={styles.linkText}>Sign up</Text>
+    <Link to={to} style={styles.link}>
+      <Text style={styles.linkText}>{text}</Text>
     </Link>
   );
 }
@@ -72,16 +86,16 @@ const AppBar = () => {
     apolloClient.resetStore();
     history.push("/");
   };
-
+  
   return (
     <View style={styles.container}>
       <ScrollView horizontal>
-        <Link to="/" style={styles.link}>
-          <Text style={styles.linkText}>Repositories</Text>
-        </Link>
-        { loggedIn && <ReviewLink /> }
-        { loggedIn ? <SignOut onSignOut={handleSignOut} /> : <SignInLink /> }
-        { !loggedIn && <SignUpLink /> }
+        <NavLink to="/" text="Repositories" />
+        { loggedIn && <NavLink to="/review" text="Create review"/>}
+        { loggedIn && <NavLink to="/user-reviews" text="My reviews"/>}
+        { loggedIn && <SignOut onSignOut={handleSignOut} />}
+        { !loggedIn && <NavLink to="/signin" text="Sign in" />}
+        { !loggedIn && <NavLink to="/signup" text="Sign up"/>}
       </ScrollView>
     </View>
   );

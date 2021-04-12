@@ -6,8 +6,9 @@ import theme from "../theme";
 import * as Yup from "yup";
 import useSignIn from "../hooks/useSignIn";
 import { useHistory } from "react-router-native";
+import Error from "./Error";
 
-export const SignInForm = ({ onSubmit }) => {
+export const SignInForm = ({ onSubmit, error }) => {
   const styles = {
     form: {
       padding: 30,
@@ -41,6 +42,7 @@ export const SignInForm = ({ onSubmit }) => {
       {( { handleSubmit }) => {
         return (
           <View style={styles.form}>
+            {error && <Error message={error} />}
             <FormikTextInput testID="usernameInput" name="username" placeholder="Username" />
             <View style={styles.spacer} />
             <FormikTextInput testID="passwordInput" name="password" placeholder="Password" secureTextEntry />
@@ -59,17 +61,19 @@ export const SignInForm = ({ onSubmit }) => {
 const SignIn = () => {
   const [signIn] = useSignIn();
   const history = useHistory();
+  const [error, setError] = React.useState(null);
 
   const handleFormSubmit = async ({ username, password }) => {
     try {
       await signIn({ username, password });
       history.push("/");
     } catch(e) {
+      setError(e.message);
       console.log("Error", e);
     }
   };
 
-  return <SignInForm onSubmit={handleFormSubmit} />
+  return <SignInForm onSubmit={handleFormSubmit} error={error} />
 };
 
 export default SignIn;
