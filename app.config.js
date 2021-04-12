@@ -31,7 +31,7 @@ export default {
     "favicon": "./assets/favicon.png"
   },
   extra: {
-    /* eslint-disable no-undef */
+    /* eslint-disable */
     env: process.env.ENV,
     APOLLO_URI: process.env.APOLLO_URI
     /* eslint-enable */

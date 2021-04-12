@@ -4,10 +4,10 @@ import { Formik } from "formik";
 import FormikTextInput from "./FormikTextInput";
 import theme from "../theme";
 import * as Yup from "yup";
-import useSignIn from "../hooks/useSignin";
+import useSignIn from "../hooks/useSignIn";
 import { useHistory } from "react-router-native";
 
-const SignInForm = ({onSubmit}) => {
+export const SignInForm = ({ onSubmit }) => {
   const styles = {
     form: {
       padding: 30,
@@ -26,16 +26,33 @@ const SignInForm = ({onSubmit}) => {
     }
   };
 
+  const initialValues = {
+    username: "",
+    password: ""
+  };
+
+  const validationSchema = Yup.object().shape({
+    username: Yup.string().required("Username is required"),
+    password: Yup.string().required("Password is required")
+  });
+
   return (
-    <View style={styles.form}>
-      <FormikTextInput name="username" placeholder="Username" />
-      <View style={styles.spacer} />
-      <FormikTextInput name="password" placeholder="Password" secureTextEntry />
-      <View style={styles.spacer} />
-      <Pressable onPress={onSubmit} style={styles.button}>
-        <Text style={styles.buttonText}>Sign in</Text>
-      </Pressable>
-    </View>
+    <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
+      {( { handleSubmit }) => {
+        return (
+          <View style={styles.form}>
+            <FormikTextInput testID="usernameInput" name="username" placeholder="Username" />
+            <View style={styles.spacer} />
+            <FormikTextInput testID="passwordInput" name="password" placeholder="Password" secureTextEntry />
+            <View style={styles.spacer} />
+            <Pressable testID="signInSubmit" onPress={handleSubmit} style={styles.button}>
+              <Text style={styles.buttonText}>Sign in</Text>
+            </Pressable>
+          </View>
+        );
+      }}
+    </Formik>
+    
   );
 };
 
@@ -52,21 +69,7 @@ const SignIn = () => {
     }
   };
 
-  const initialValues = {
-    username: "",
-    password: ""
-  };
-
-  const validationSchema = Yup.object().shape({
-    username: Yup.string().required("Username is required"),
-    password: Yup.string().required("Password is required")
-  });
-
-  return (
-    <Formik initialValues={initialValues} onSubmit={handleFormSubmit} validationSchema={validationSchema}>
-      {( { handleSubmit }) => <SignInForm onSubmit={handleSubmit} />}
-    </Formik>
-  );
+  return <SignInForm onSubmit={handleFormSubmit} />
 };
 
 export default SignIn;

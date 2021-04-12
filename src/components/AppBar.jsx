@@ -8,6 +8,7 @@ import { useQuery } from "@apollo/client";
 import { GET_AUTHORIZED_USER } from "../graphql/queries";
 import useAuthStorage from "../hooks/useAuthStorage";
 import { useApolloClient } from "@apollo/client";
+import SignUp from "./SignUp";
 
 const styles = StyleSheet.create({
   container: {
@@ -42,6 +43,22 @@ const SignOut = ({ onSignOut }) => {
   );
 };
 
+const ReviewLink = () => {
+  return (
+    <Link to="/review" style={styles.link}>
+      <Text style={styles.linkText}>Create review</Text>
+    </Link>
+  );
+}
+
+const SignUpLink = () => {
+  return (
+    <Link to="/signup" style={styles.link}>
+      <Text style={styles.linkText}>Sign up</Text>
+    </Link>
+  );
+}
+
 const AppBar = () => {
   const { data } = useQuery(GET_AUTHORIZED_USER);
   const authStorage = useAuthStorage();
@@ -62,7 +79,9 @@ const AppBar = () => {
         <Link to="/" style={styles.link}>
           <Text style={styles.linkText}>Repositories</Text>
         </Link>
+        { loggedIn && <ReviewLink /> }
         { loggedIn ? <SignOut onSignOut={handleSignOut} /> : <SignInLink /> }
+        { !loggedIn && <SignUpLink /> }
       </ScrollView>
     </View>
   );
